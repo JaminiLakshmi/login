@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher and Student File Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        /* Other styles as before */
+        /* ... */
+
+        /* Container styles */
+        #login-form, #teacher-upload-section, #student-view-section {
+            text-align: center;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Login form display */
+        #login-form {
+            display: block;
+        }
+
+        /* Hide upload sections initially */
+        #teacher-upload-section, #student-view-section {
+            display: none;
+        }
+
+        /* Button styles */
+        button {
+            padding: 8px 20px;
+            border: none;
+            background-color: #007bff;
+            color: #fff;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div id="login-form">
+        <h2>Login</h2>
+        <form id="uploadForm">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+
+            <button type="button" onclick="login()">Login</button>
+        </form>
+    </div>
+
+    <div id="teacher-upload-section" style="display: none;">
+        <h2>Teacher - File Upload</h2>
+        <form id="fileUploadForm">
+            <label for="class">Class:</label>
+            <select id="class" name="class">
+                <option value="1">Class 1</option>
+                <option value="2">Class 2</option>
+                <option value="3">Class 3</option>
+                <option value="4">Class 4</option>
+                <option value="5">Class 5</option>
+            </select><br><br>
+
+            <label for="lesson">Lesson:</label>
+            <select id="lesson" name="lesson">
+                <option value="1">Lesson 1</option>
+                <option value="2">Lesson 2</option>
+                <option value="3">Lesson 3</option>
+                <option value="4">Lesson 4</option>
+                <option value="5">Lesson 5</option>
+                <option value="6">Lesson 6</option>
+                <option value="7">Lesson 7</option>
+                <option value="8">Lesson 8</option>
+            </select><br><br>
+
+            <input type="file" id="fileInput" name="fileInput" multiple><br><br>
+            <button type="button" onclick="uploadFiles()">Upload Files</button>
+        </form>
+    </div>
+
+    <div id="student-view-section" style="display: none;">
+        <h2>Student - View Uploaded Documents</h2>
+        <ul id="fileList"></ul>
+    </div>
+
+    <script>
+        var teacherFiles = {}; // Object to hold teacher's uploaded files based on class and lesson
+
+        function login() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+
+            var teacherUsername = "teacher@example.com";
+            var studentUsername = "student@example.com";
+
+            if (username === teacherUsername && password === "Teacher123!") {
+                alert("Login successful as a teacher!");
+                document.getElementById("login-form").style.display = "none";
+                document.getElementById("teacher-upload-section").style.display = "block";
+            } else if (username === studentUsername && password === "Student123!") {
+                alert("Login successful as a student!");
+                document.getElementById("login-form").style.display = "none";
+                document.getElementById("student-view-section").style.display = "block";
+                displayFiles(teacherFiles);
+            } else {
+                alert("Invalid username or password. Please try again.");
+            }
+        }
+
+        function uploadFiles() {
+            var classSelection = document.getElementById("class").value;
+            var lessonSelection = document.getElementById("lesson").value;
+            var files = document.getElementById("fileInput").files;
+
+            if (files.length > 0) {
+                if (!teacherFiles[classSelection]) {
+                    teacherFiles[classSelection] = {};
+                }
+
+                if (!teacherFiles[classSelection][lessonSelection]) {
+                    teacherFiles[classSelection][lessonSelection] = [];
+                }
+
+                for (var i = 0; i < files.length; i++) {
+                    teacherFiles[classSelection][lessonSelection].push(files[i].name);
+                }
+                alert("Files uploaded successfully for Class " + classSelection + " Lesson " + lessonSelection + "!");
+            } else {
+                alert("Please select files to upload.");
+            }
+        }
+
+        function displayFiles(files) {
+            var fileList = document.getElementById("fileList");
+            fileList.innerHTML = ""; // Clear existing list
+
+            Object.keys(files).forEach(function(classKey) {
+                Object.keys(files[classKey]).forEach(function(lessonKey) {
+                    var listItem = document.createElement("li");
+                    listItem.textContent = "Class " + classKey + " - Lesson " + lessonKey + ": " + files[classKey][lessonKey].join(", ");
+                    fileList.appendChild(listItem);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
